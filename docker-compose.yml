@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./docker/backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      - db
+
+  frontend:
+    build: ./docker/frontend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./frontend:/app
+    depends_on:
+      - backend
+
+  ai:
+    build: ./docker/ai
+    volumes:
+      - ./ai:/app
+    depends_on:
+      - backend
+
+  db:
+    build: ./docker/db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mates_saas
+    volumes:
+      - ./docker/db/data:/var/lib/postgresql/data
